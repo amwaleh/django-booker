@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery=1 %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<div class="nav container">
+    <nav class="nav nav-pills pull-right">
+    <li><a href="{% url 'assess:books' %}" class="">Books</a></li>
+    <li><a href="{% url 'assess:categories' %}" class="">Cagories</a></li>
+    <li><a href="{% url 'assess:search' %}" class=""> Search</a></li>
+    </nav>
+</div>
+
+<div class="jumbotron">
+</div>
+
+<div class="container ">
+
+    {% if search %}
+        <div class="col-lg-8 well col-lg-offset-2">
+            <form action="{% url 'assess:search' %}" method="post">
+
+                 {% csrf_token %}
+                    <legend> Search</legend>
+
+                    {% for field in search %}
+                        {% bootstrap_field field layout="inline" field_class="col-sm-4 " %}
+
+                    {% endfor %}
+                    {% bootstrap_button button_type="submit" content="search" %}
+
+                </form>
+        </div>
+    {% endif %}
+</div>
+<br><br><br>
+<div class="container ">
+<div class="col-lg-3 pull-right ">
+{% bootstrap_messages %}</div>
+
+
+{% if form %}
+    <div class="col-lg-7 col-lg-offset-2 well-lg panel-default">
+
+        <form action="{{ form_action }}" method="post">
+            {% csrf_token %}
+            <legend> {{ title }}</legend>
+            {% bootstrap_form form layout="inline" %}
+            {% buttons %}
+                {% if title is 'categories' %}
+                <a href="{% url 'assess:categories' %}">
+                <button type="button" class="btn btn-success">
+                    {% bootstrap_icon "tasks" %} add category
+                </button>
+                {% endif %}
+                <a href="{% url 'assess:categories' %}"></a>
+                <button type="submit" class="btn btn-lg btn-primary pull-right">
+                    {% bootstrap_icon "plus" %} Submit
+                </button>
+
+            {% endbuttons %}
+        </form>
+    </div>
+
+
+{% endif %}
+
+
+{% if result_form %}
+    <table class="table table-striped col-lg-7">
+
+        <tr>
+            <th>Title</th>
+            <th>Desc</th>
+            <th>Category</th></tr>
+         {% for item in result_form %}
+        <tr >
+            <td><a href="{%   url 'assess:book'  item.id %}"> {{ item.title }}</a></td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.category}}</td>
+        </tr>
+
+    {% endfor %}
+</table>
+
+{% endif %}
+</div>
+{% if book_preview %}
+<div class="container well">
+    <h2>{{ book_preview.title }}</h2>
+<div class="">
+    {{ book_preview.description }}
+</div>
+{% buttons %}
+
+    <div class="pull-right">
+    <a href="{% url 'assess:delete_book' id %}"
+    <button class="btn btn-primary">
+    {% bootstrap_icon "tasks" %}
+    delete
+
+    </button></a>
+    <button class="btn btn-info">
+    {% bootstrap_icon "floppy-open" %}
+        update
+    </button>
+
+    </div>
+{% endbuttons %}
+
+</div>
+{% endif %}
+
+
+
+
+</body>
+</html>

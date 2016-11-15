@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-import store.urls
+import library.urls
+import assess.urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'',include(store.urls))
+    url(r'^lib/',include(library.urls)),
+    url(r'',include(assess.urls, namespace="assess"))
 ]
