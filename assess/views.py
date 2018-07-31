@@ -18,6 +18,7 @@ class Index(TemplateView):
             search=FormSearch(),
             form=FormBooks(),
             form_action=reverse('assess:books'),
+            result_form=Books.objects.all(),
             title='Add Books',
         )
         return render(request, self.template_name, context)
@@ -33,19 +34,23 @@ class Index(TemplateView):
             )
             return render(request, self.template_name, context)
 
-        messages.error(request,  'Error occured')
+        messages.error(request,  form.errors.as_text())
         return redirect(reverse('assess:books'))
 
+
 class DeleteBook(TemplateView):
-    def post(self,request,pk,*args, **kwargs):
-        Books.delete(pk)
-        messages.info(request,"Deleted")
+    template_name = "assess.html"
 
-        return redirect(reverse('assess:search'))
+    def get(self, request, pk, *args, **kwargs):
+
+        Books.objects.filter(id=pk).delete()
+
+        messages.info(request, "Deleted")
+
+        return redirect(reverse('assess:books'))
 
 
-
-class Categories(TemplateView):
+class CategoriesView(TemplateView):
     template_name = "assess.html"
 
     def get(self, request, *args, **kwargs):
@@ -53,6 +58,7 @@ class Categories(TemplateView):
             form=FormCategories(),
             form_action=reverse('assess:categories'),
             title='categories',
+            result_categories=Categories.objects.all(),
         )
         return render(request, self.template_name, context)
 
@@ -69,19 +75,21 @@ class Categories(TemplateView):
 class Search(TemplateView):
     template_name = "assess.html"
 
-    def get (self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = dict(
             search=FormSearch(),
         )
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
         query = request.POST.get('search')
         cat = request.POST.get('category')
-        result = Books.objects.filter(title__icontains=query,category__exact=cat)
+
         if cat == 'null':
             result = Books.objects.filter(title__icontains=query)
+        else:
+            result = Books.objects.filter(
+                title__icontains=query, category__exact=cat)
 
         if result:
             context = dict(
@@ -93,10 +101,11 @@ class Search(TemplateView):
         messages.error(request, 'Nothing was found')
         return redirect(reverse('assess:search'))
 
+
 class FetchBook(TemplateView):
     template_name = "assess.html"
-    def get(self, request, pk,*args, **kwargs):
 
+    def get(self, request, pk, *args, **kwargs):
 
         try:
             result = Books.objects.get(pk=pk)
@@ -107,6 +116,5 @@ class FetchBook(TemplateView):
         context = dict(
             search=FormSearch(),
             book_preview=result,
-
         )
         return render(request, self.template_name, context)

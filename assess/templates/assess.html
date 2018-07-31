@@ -7,24 +7,46 @@
     {% bootstrap_javascript jquery=1 %}
     {% bootstrap_javascript %}
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/slate/bootstrap.min.css">
     <title>Document</title>
 </head>
+<style>
+    body{
+        font-size: 12px;
+    }
+    th, legend {
+    color: #d114d1;
+}
+td {
+    color: #ff9900;
+}
+th{
+    background-color:rgb(25, 51, 51)
+}
+.card{
+    display: inline-flex;
+    width: 301px;
+    height: 374px;
+}
+.cardWrapper{
+    display:flex
+}
+    </style>
 <body>
 <div class="nav container">
     <nav class="nav nav-pills pull-right">
     <li><a href="{% url 'assess:books' %}" class="">Books</a></li>
-    <li><a href="{% url 'assess:categories' %}" class="">Cagories</a></li>
+    <li><a href="{% url 'assess:categories' %}" class="">Categories</a></li>
     <li><a href="{% url 'assess:search' %}" class=""> Search</a></li>
     </nav>
 </div>
 
-<div class="jumbotron">
-</div>
+<div class="jumbotron" >
 
 <div class="container ">
 
     {% if search %}
-        <div class="col-lg-8 well col-lg-offset-2">
+        <div class="col-lg-6 well col-lg-offset-2" >
             <form action="{% url 'assess:search' %}" method="post">
 
                  {% csrf_token %}
@@ -40,6 +62,7 @@
         </div>
     {% endif %}
 </div>
+</div>
 <br><br><br>
 <div class="container ">
 <div class="col-lg-3 pull-right ">
@@ -48,7 +71,6 @@
 
 {% if form %}
     <div class="col-lg-7 col-lg-offset-2 well-lg panel-default">
-
         <form action="{{ form_action }}" method="post">
             {% csrf_token %}
             <legend> {{ title }}</legend>
@@ -62,9 +84,8 @@
                 {% endif %}
                 <a href="{% url 'assess:categories' %}"></a>
                 <button type="submit" class="btn btn-lg btn-primary pull-right">
-                    {% bootstrap_icon "plus" %} Submit
+                    {% bootstrap_icon "plus" %} add
                 </button>
-
             {% endbuttons %}
         </form>
     </div>
@@ -72,25 +93,41 @@
 
 {% endif %}
 
+<hr>
 
 {% if result_form %}
-    <table class="table table-striped col-lg-7">
+<div class='cardWrapper'></div>
+{% for item in result_form %}
 
-        <tr>
-            <th>Title</th>
-            <th>Desc</th>
-            <th>Category</th></tr>
-         {% for item in result_form %}
-        <tr >
-            <td><a href="{%   url 'assess:book'  item.id %}"> {{ item.title }}</a></td>
-            <td>{{ item.description }}</td>
-            <td>{{ item.category}}</td>
-        </tr>
+<div class="card">
+    <img class="card-img-top" src="https://loremflickr.com/320/240/{{ item.title}}" alt="Card image cap">
+    <div class="card-body">
+        <p class="card-text">
+            <a href="{%   url 'assess:book'  item.id %}"> {{ item.title }}</a><br>
+            {{ item.description }}
+            <br>{{ item.category}}</p>
+    </div>
+</div>
 
-    {% endfor %}
-</table>
+{% endfor %}
+</div>
 
 {% endif %}
+{% if result_categories %}
+    <table class="table table-striped">
+        <tr>
+            <th>Category</th></tr>
+         {% for item in result_categories %}
+        <tr >
+            <td>{{ item.category}}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+
+
+
 </div>
 {% if book_preview %}
 <div class="container well">
@@ -101,7 +138,7 @@
 {% buttons %}
 
     <div class="pull-right">
-    <a href="{% url 'assess:delete_book' id %}"
+    <a href="{% url 'assess:delete_book' book_preview.id %}"
     <button class="btn btn-primary">
     {% bootstrap_icon "tasks" %}
     delete
@@ -111,7 +148,6 @@
     {% bootstrap_icon "floppy-open" %}
         update
     </button>
-
     </div>
 {% endbuttons %}
 

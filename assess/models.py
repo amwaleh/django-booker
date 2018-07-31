@@ -9,20 +9,13 @@ class Timemixin(models.Model):
 
 
 class Categories(Timemixin):
-    Category = models.CharField(max_length=64, unique=True)
+    category = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
-        return self.Category
+        return self.category
 
 class Books(Timemixin):
     title = models.CharField(max_length=32, unique=True)
     description = models.CharField(max_length=255)
     category = models.ForeignKey(Categories)
-
-
-
-
-
-
-
 
