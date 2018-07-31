@@ -8,9 +8,9 @@ class TestAssess(TestCase):
 
         client = Client()
         self.categories= [
-                Categories.objects.create(Category="sports"),
-                Categories.objects.create(Category="comics"),
-                Categories.objects.create(Category="Novel"),
+                Categories.objects.create(category="sports"),
+                Categories.objects.create(category="comics"),
+                Categories.objects.create(category="Novel"),
         ]
 
         Books.objects.create(title="test1",  category=self.categories[0])
@@ -21,18 +21,17 @@ class TestAssess(TestCase):
 
     def test_Books_Model(self):
         data = Books.objects.all()
-        self.assertEqual(data.count(),4)
+        self.assertEqual(data.count(), 4)
 
     def test_Books_Model(self):
         data = Books.objects.get(title="test1")
-        self.assertIsNot(None,data)
-        self.assertEqual(data.title,'test1')
+        self.assertIsNot(None, data)
+        self.assertEqual(data.title, 'test1')
 
     def test_Categories_Model(self):
         data = Categories.objects.all()
-        self.assertIsNot(None,data)
+        self.assertIsNot(None, data)
 
     def test_Index_view(self):
         response = self.client.get('/')
-        self.assertEqual(response.status_code,200)
-    de test_index_view(self)
+        self.assertEqual(response.status_code, 200)
