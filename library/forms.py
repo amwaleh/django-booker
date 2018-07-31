@@ -1,5 +1,5 @@
 from django import forms
-from store.models import Authors, Publishers, Books
+from library.models import Authors, Publishers, Books
 
 class FormBooks(forms.ModelForm):
     class Meta:
